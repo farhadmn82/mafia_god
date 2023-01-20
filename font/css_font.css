@@ -1,0 +1,8 @@
+﻿@font-face {
+    font-family: "MyFont1";
+    src: url(irsans.ttf) format("truetype");
+}
+@font-face {
+    font-family: "MyFont2";
+    src: url(BNazanin.ttf) format("truetype");
+}
