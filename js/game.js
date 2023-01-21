@@ -366,7 +366,7 @@ function inspector_inspection(inspectorIndex){
     $('#nightActionMessage').html('یک نفر را برای استعلام انتخاب کنید');
     $("#nightActionArea").html("");
     for (i=0; i < players.length; i++){
-        if (players[i].isInGame())
+        if (players[i].isInGame() && i != inspectorIndex)
             $("#nightActionArea").append('<button class="btn btn_action btn_player" onClick="submitNightAction(3,' + inspectorIndex + ',' + i + ')">' + players[i].name + '</button>');
     }
 }
@@ -375,10 +375,13 @@ function submitNightAction(actionType, rolePlayerIndex, playerIndex){
     nightActions.push(new Action(numDayNight, actionType, rolePlayerIndex, playerIndex));
     if (actionType == ActionType.Inspected){
         var inps = "منفی";
-        if(ROLES[players[playerIndex].roleId].isMafia())
-        var inps = "مثبت";
-        if(ROLES[players[playerIndex].roleId].roleName == RoleName.GodFather && !godFatherInspectionResult())
-        inps = 'منفی';
+        if(ROLES[players[playerIndex].roleId].isMafia()){
+            var inps = "مثبت";
+        }
+        if(ROLES[players[playerIndex].roleId].roleName == RoleName.GodFather && !godFatherInspectionResult()){
+            inps = 'منفی';
+            godFatherNegativeInspection++;
+        }
         
         $('#nightActionMessage').html('جواب استعلام ' + "'" + players[playerIndex].name + "'" + '<br/><strog>' + inps + '</strong>');
     }
