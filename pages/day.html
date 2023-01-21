@@ -2,17 +2,17 @@
 <div id="day_timer_div" class="day_timer_div">
     <div class="w3-center">
         <div class="w3-bar">
-          <button class="w3-button w3-black w3-large" onclick="restart_countdown_timer(30)">30s</button>
-          <button class="w3-button w3-teal w3-large" onclick="restart_countdown_timer(45)">45s</button>
-          <button class="w3-button w3-gray w3-large" onclick="restart_countdown_timer(60)">60s</button>
-          <button class="w3-button w3-teal w3-large" onclick="restart_countdown_timer(90)">90s</button>
-          <button class="w3-button w3-gray w3-large" onclick="restart_countdown_timer(120)">120s</button>
+          <button class="w3-button w3-margin btn btn_sec" onclick="restart_countdown_timer(30)">30s</button>
+          <button class="w3-button w3-margin btn btn_sec" onclick="restart_countdown_timer(45)">45s</button>
+          <button class="w3-button w3-margin btn btn_sec" onclick="restart_countdown_timer(60)">60s</button>
+          <button class="w3-button w3-margin btn btn_sec" onclick="restart_countdown_timer(90)">90s</button>
+          <button class="w3-button w3-margin btn btn_sec" onclick="restart_countdown_timer(120)">120s</button>
         </div>
         
-        <div id="countdown_timer_second" class="countdown_timer_second w3-center w3-xxlarge">0</div>
-        <button id="pause" class="w3-button w3-gray w3-xlarge w3-circle" onclick="pause_countdown_timer()">II</button>
+        <div id="countdown_timer_second" class="countdown_timer_second w3-center">0.0</div>
+        <button id="pause" class="btn btn_pause center" onclick="pause_countdown_timer()">||</button>
     </div>
 </div>
-<div class="w3-bar w3-center">
-    <button class='w3-button w3-teal w3-round-xxlarge w3-xlarge' style="margin-top:20vh" onclick="load_voting()">Go to Voting</button> 
+<div class="">
+    <button class='w3-align-right btn btn_goto_voting' onclick="load_voting()">رای گیری</button> 
 </div>
