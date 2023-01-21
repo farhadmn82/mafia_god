@@ -129,7 +129,6 @@ function load_voting(){
 }
 
 function votePlayer(playerIndex){
-    var msg = ""; 
     if (playerIndex == -1){
         if (confirm('هیچ بازیکنی خارج نشود و به شب برویم؟')) {
             load_sleep();
@@ -210,26 +209,27 @@ function load_mafiaWakeUp(){
     $("#sleepMessage").html('فقط مافیا بیدار بشه و تصمیم بگیره');
     //playsound MAFIA DECISION
     play(2);
-    setTimeout(mafiaDecisionTimeOut, 3000);
+    setTimeout(mafiaDecisionTimeOut, 3 * unit);
 }
 
 function mafiaDecisionTimeOut(){
     //playSound MAFIA SLEEP
     $("#sleepMessage").html('مافیا بخوابه');
     play(3);
-    setTimeout(prepareForNight, 2000);
+    setTimeout(prepareForNight, 2 * unit);
 }
 
 function prepareForNight(){
     //sound: PLAYERS ACTIONS
     $("#sleepMessage").html('بازیکن ها به ترتیب نقش های خود رو انجام بدن');
     play(4);
-    setTimeout(load_night, 1000);
+    setTimeout(load_night, 1 * unit);
 }
 
 // Night
 function load_night(){
     show_page("night");
+    $("#nightActionArea").html("");   
     $("#page_title").html('شب ' + numDayNight);
     $("#nightMessage").html('نام خود رو انتخاب کنید');
     
@@ -244,6 +244,11 @@ function load_night(){
     }
 }
 
+function clearNightActionPage(){
+    $('#nightActionMessage').html('');
+    $("#nightActionArea").html("");
+}
+
 function isNightActionDone(player){
     var done = false;
     nightActions.forEach(act => {
@@ -254,33 +259,52 @@ function isNightActionDone(player){
     return done;
 }
 
+
+// Night Actions
 function showPlayerNightAction(playerIndex){
-    show_page('nightAction');
-    switch (players[playerIndex].roleId){
-        case 0: break;
-        case 1: godFather_nightShoot(playerIndex); break;
-        case 2: break;
-        case 4: doctor_save(playerIndex); break;
-        case 5: inspector_inspection(playerIndex); break;
+    if (confirm('آیا ' + "'" + players[playerIndex].name + "'" +   ' هستی؟')) {
+        show_page('nightAction');
+        switch (players[playerIndex].roleId){
+            case 0: no_action(playerIndex); break;
+            case 1: godFather_nightShoot(playerIndex); break;
+            case 2: no_action(playerIndex); break;
+            case 3: no_action(playerIndex); break;
+            case 4: doctor_save(playerIndex); break;
+            case 5: inspector_inspection(playerIndex); break;
+            default: no_role_error(playerIndex);
+        }
+    }  
+    else{
+        load_night();
+    }
+}
+
+function no_action(playerIndex){
+    $('#nightActionMessage').html('شما برای هیج کاری ندارید<br/>فقط یک بازیکن را انتخاب کنید');
+    $("#nightActionArea").html("");
+    for (i=0; i < players.length; i++){
+        if (players[i].isInGame())
+            $("#nightActionArea").append('<button class="btn btn_player" onClick="submitNightAction(0,' + playerIndex + ',' + i + ')">' + players[i].name + '</button>');
     }
 }
 
 function godFather_nightShoot(godFatherId){
-    
+    $('#nightActionMessage').html('شلیک شب رو انتخاب کن');
     $("#nightActionArea").html("");
     for (i=0; i < players.length; i++){
         if (players[i].isInGame() && ROLES[players[i].roleId].isCitizen())
-            $("#nightActionArea").append('<button class="" onClick="submitNightAction(1,' + godFatherId + ',' + i + ')">' + players[i].name + '</button>');
+            $("#nightActionArea").append('<button class="btn btn_player" onClick="submitNightAction(1,' + godFatherId + ',' + i + ')">' + players[i].name + '</button>');
     }
 }
 
 function doctor_save(doctorIndex){
+    $('#nightActionMessage').html('یک نفر رو نجات بده');
     $("#nightActionArea").html("");
     for (i=0; i < players.length; i++){
         if (i == doctorIndex && !doctorSelfSaveIsAllowed())
             continue;
         if (players[i].isInGame())
-            $("#nightActionArea").append('<button class="" onClick="submitNightAction(2,' + doctorIndex + ',' + i + ')">' + players[i].name + '</button>');
+            $("#nightActionArea").append('<button class="btn btn_player" onClick="submitNightAction(2,' + doctorIndex + ',' + i + ')">' + players[i].name + '</button>');
     }
 }
 
@@ -294,10 +318,11 @@ function doctorSelfSaveIsAllowed(){
 }
 
 function inspector_inspection(inspectorIndex){
+    $('#nightActionMessage').html('یک نفر را برای استعلام انتخاب کنید');
     $("#nightActionArea").html("");
     for (i=0; i < players.length; i++){
         if (players[i].isInGame())
-            $("#nightActionArea").append('<button class="" onClick="submitNightAction(3,' + inspectorIndex + ',' + i + ')">' + players[i].name + '</button>');
+            $("#nightActionArea").append('<button class="btn btn_player" onClick="submitNightAction(3,' + inspectorIndex + ',' + i + ')">' + players[i].name + '</button>');
     }
 }
 
@@ -305,19 +330,19 @@ function inspector_inspection(inspectorIndex){
 function submitNightAction(actionType, rolePlayerIndex, playerIndex){
     nightActions.push(new Action(numDayNight, actionType, players[rolePlayerIndex], players[playerIndex]));
     if (actionType == ActionType.Inspected){
-        var res = "No";
+        var inps = "منفی";
         if(ROLES[players[playerIndex].roleId].isMafia())
-            res = 'YES';
+        var inps = "مثبت";
         if(ROLES[players[playerIndex].roleId].roleName == 'GodFather' && !godFatherInspectionResult())
-            res = 'No';
+        inps = 'منفی';
         
-        $("#nightActionArea").html(res + '<button class="" onClick="load_night()">Continue</button>');
+        $('#nightActionMessage').html('جواب استعلام ' + "'" + players[playerIndex].name + "'" + '<br/><strog>' + inps + '</strong>');
     }
-    else{
-        $("#nightActionArea").html("");
-        load_night();
-    }
+        
+    $("#nightActionArea").html('<button class="btn btn_submit" onClick="load_night()">اتمام</button>');    
 }
+
+
 
 var godFatherNegativeInspection = 0;
 const GODFATHER_NEGATIVE_INSPECTION_MAX = 1
@@ -328,7 +353,9 @@ function godFatherInspectionResult(){
         return true;
 }
 
+
 function start_next_day(){
+    numDayNight++;
     //voice
     //create report
     //show report
@@ -367,5 +394,6 @@ function play() {
 
 function play(voiceId) {
     var audio = new Audio('audio\\' + voiceId + '.wav');
-    audio.play();
+    //audio.play();
 }
+const unit = 100;

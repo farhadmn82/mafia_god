@@ -15,6 +15,7 @@ body{
     min-height: 100%;
     margin: 0;
     background: darkcyan;
+    direction: rtl;
 }
 
 .navbar{
@@ -135,6 +136,11 @@ button{
 }
 
 .btn_end_night{
+    padding: 2vh 20%;
+    margin-top: 15vh;
+}
+
+.btn_submit{
     padding: 2vh 20%;
     margin-top: 15vh;
 }
