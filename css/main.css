@@ -118,6 +118,8 @@ button{
     border-radius: 5vh;
 }
 
+
+
 .btn_goto_voting{
     bottom: 5vh;
     position: absolute;
@@ -208,4 +210,8 @@ button{
     .btn_back{
         padding: 0.4vh 0vh 0 1vh;
     }
+}
+
+.btn_action{
+    background-color: darkgray;
 }
