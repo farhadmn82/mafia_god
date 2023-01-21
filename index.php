@@ -10,13 +10,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-    <div id='msg'></div>
     <div id='nav_bar' class='navbar'>
-        <i class="fa fa-arrow-left w3-circle w3-xlarge w3-margin-left" style='margin-top:0.7vh;'></i>
+        <i class="btn_back fa fa-arrow-left w3-large"></i>
     </div>
     <div id='page_header' class='w3-container page_header'>
         <div id='page_title' class='w3-center page_title w3-center'>
-            MAFIA
+            مافیا
         </div>
     
     </div>

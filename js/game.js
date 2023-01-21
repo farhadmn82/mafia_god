@@ -174,11 +174,11 @@ function refrechRemainSeconds(){
     $("#countdown_timer_second").html(remain.toFixed(1));
     if (remain < 10 && !ten_second_alarm){
         ten_second_alarm = true;    
-        play();
+        play(4);
     } 
         
     if (remain <= 0){
-        play();
+        play(5);
     }
     else{
         if(!countdown_timer_pause) 
@@ -195,42 +195,48 @@ function pause_countdown_timer(){
         
 }
 
+// Sleep
 function load_sleep(){
     show_page("sleep");
-    $("#msg").html('mirim be shab. cheshm ha basteh');
-    play();
+    $("#page_title").html('شب ' + numDayNight);
+    $("#sleepButton").css("display", "block");
+    $("#sleepMessage").html('شب شروع میشه<br/>همه چشم ها بسته');
+    play(1);
 }
 
 function load_mafiaWakeUp(){
-    show_page("mafiaWakeUp");
+    //show_page("mafiaWakeUp");
+    $("#sleepButton").css("display", "none");
+    $("#sleepMessage").html('فقط مافیا بیدار بشه و تصمیم بگیره');
     //playsound MAFIA DECISION
-    $("#msg").html('mafia bidar. tasmim begire');
-    play();
+    play(2);
     setTimeout(mafiaDecisionTimeOut, 3000);
 }
 
 function mafiaDecisionTimeOut(){
     //playSound MAFIA SLEEP
-    $("#msg").html('mafia bekhabe');
-    play();
+    $("#sleepMessage").html('مافیا بخوابه');
+    play(3);
     setTimeout(prepareForNight, 2000);
 }
 
 function prepareForNight(){
     //sound: PLAYERS ACTIONS
-    $("#msg").html('bazikon ha be tartib naghsh hashuno anjam bedan');
-    play();
-    load_night();
+    $("#sleepMessage").html('بازیکن ها به ترتیب نقش های خود رو انجام بدن');
+    play(4);
+    setTimeout(load_night, 1000);
 }
 
+// Night
 function load_night(){
     show_page("night");
-    $("#msg").html('Night ' + numDayNight);
-
+    $("#page_title").html('شب ' + numDayNight);
+    $("#nightMessage").html('نام خود رو انتخاب کنید');
+    
     $("#actionPlayersList").html("");
     for (i=0; i < players.length; i++){
         if (players[i].isInGame()){
-            if(!nightActionIsDone(players[i]))
+            if(!isNightActionDone(players[i]))
                 $("#actionPlayersList").append('<button class="btn btn_player" onClick="showPlayerNightAction(' + i + ')">'+ players[i].name + '</button>');  
             else 
                 $("#actionPlayersList").append('<button disabled class="btn btn_player">'+ players[i].name + '</button>');  
@@ -238,7 +244,7 @@ function load_night(){
     }
 }
 
-function nightActionIsDone(player){
+function isNightActionDone(player){
     var done = false;
     nightActions.forEach(act => {
         if (act.numNight == numDayNight && player.name == act.rolePlayer.name)
@@ -266,7 +272,6 @@ function godFather_nightShoot(godFatherId){
         if (players[i].isInGame() && ROLES[players[i].roleId].isCitizen())
             $("#nightActionArea").append('<button class="" onClick="submitNightAction(1,' + godFatherId + ',' + i + ')">' + players[i].name + '</button>');
     }
-    
 }
 
 function doctor_save(doctorIndex){
@@ -360,3 +365,7 @@ function play() {
     audio.play();
   }
 
+function play(voiceId) {
+    var audio = new Audio('audio\\' + voiceId + '.wav');
+    audio.play();
+}
