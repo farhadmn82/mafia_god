@@ -89,7 +89,7 @@ function Players_Factory(){
     let players = [
         new Player("A", 1), 
         new Player("B", 5), 
-        new Player("B2", 3),
+        new Player("فرهاد", 3),
         new Player("C", 4) 
     ];
 
@@ -118,19 +118,30 @@ function load_voting(){
     show_page("voting");
 
     $("#votingPlayerList").html("");
-    players.forEach(element => {
-        if (element.isInGame())
-            $("#votingPlayerList").append('<button class="" onClick="votePlayer(\''+element.name+'\')">'+ element.name + '</button>');
+    for (i=0; i < players.length; i++){
+        if (players[i].isInGame())
+            $("#votingPlayerList").append('<button class="btn btn_player" onClick="votePlayer(' + i + ')">' + players[i].name + '</button>');
         else
-            $("#votingPlayerList").append('<button disabled class="" >'+ element.name + '</button>');        
-    });
-
-    $("#voting").append('<button class="" >'+ 'NOBODY' + '</button>');
+            $("#votingPlayerList").append('<button disabled class="btn btn_player">' + players[i].name + '</button>')
+    }
+     
+    $("#votingPlayerList").append('<br/><button class="btn btn_player w3-indigo w3-center" onClick="votePlayer(-1)">'+ 'هیچکس' + '</button>');
 }
 
-function votePlayer(playerName){
-    getPlayer(playerName).voted();
-    load_sleep();
+function votePlayer(playerIndex){
+    var msg = ""; 
+    if (playerIndex == -1){
+        if (confirm('هیچ بازیکنی خارج نشود و به شب برویم؟')) {
+            load_sleep();
+        }    
+    }
+    else{
+        if (confirm('آیا ' + "'" + players[playerIndex].name + "'" + ' در رای گیری خارج شود؟')) {
+            players[playerIndex].voted();
+            load_sleep();
+        }
+    }
+        
 }
 
 function load_start(){
@@ -220,9 +231,9 @@ function load_night(){
     for (i=0; i < players.length; i++){
         if (players[i].isInGame()){
             if(!nightActionIsDone(players[i]))
-                $("#actionPlayersList").append('<button class="" onClick="showPlayerNightAction(' + i + ')">'+ players[i].name + '</button>');  
+                $("#actionPlayersList").append('<button class="btn btn_player" onClick="showPlayerNightAction(' + i + ')">'+ players[i].name + '</button>');  
             else 
-                $("#actionPlayersList").append('<button disabled class="">'+ players[i].name + '</button>');  
+                $("#actionPlayersList").append('<button disabled class="btn btn_player">'+ players[i].name + '</button>');  
         }
     }
 }

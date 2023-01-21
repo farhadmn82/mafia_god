@@ -23,12 +23,12 @@
 
     <div class="w3-container content">
         <div class='page_content'>
-            <divp id="start" class="frame_day"><?php include 'pages/start.html'; ?></divp>
-            <divp id="voting" class="frame_day"><?php include 'pages/voting.html'; ?></divp>
-            <divp id="day" class="frame_day"><?php include 'pages/day.html'; ?></divp>
-            <divp id="night" class="frame_night"><?php include 'pages/night.html'; ?></divp>
-            <divp id="sleep" class="frame_night"><?php include 'pages/sleep.html'; ?></divp>
-            <divp id="nightAction" class="frame_night"><?php include 'pages/nightAction.html'; ?></divp>
+            <divp id="start" class="frame frame_day"><?php include 'pages/start.html'; ?></divp>
+            <divp id="voting" class="frame frame_day"><?php include 'pages/voting.html'; ?></divp>
+            <divp id="day" class="frame frame_day"><?php include 'pages/day.html'; ?></divp>
+            <divp id="night" class="frame frame_night"><?php include 'pages/night.html'; ?></divp>
+            <divp id="sleep" class="frame frame_night"><?php include 'pages/sleep.html'; ?></divp>
+            <divp id="nightAction" class="frame frame_night"><?php include 'pages/nightAction.html'; ?></divp>
         </div>
     </div>
 
