@@ -15,7 +15,8 @@ const ActionType = {
 }
 
 class Role{
-    constructor(roleName, typeId){
+    constructor(roleId, typeId, roleName){
+        this.roleId = roleId;
         this.roleName = roleName;
         this.typeId = typeId;
     }
@@ -57,6 +58,14 @@ class Player {
     setRole(roleId){
       this.roleId = roleId;
     }
+
+    toString(){
+        return this.id +',' + this.name +','+ this.roleId + ',' + this.status + ';'; 
+    }
+
+    fromString(value){
+
+    }
   }
 
 
@@ -66,6 +75,14 @@ class Action{
         this.type = type;
         this.rolePlayer = rolePlayer;
         this.player = player;
+    }
+
+    toString(){
+        return this.numNight +',' + this.type +','+ this.rolePlayer + ',' + this.player + ';'; 
+    }
+
+    fromString(value){
+
     }
 }
 
@@ -83,15 +100,15 @@ const RoleName = {
 
 function Roles_Factory(){
     let roles = [
-        new Role(RoleName.NoRole, RoleTypes['None']), 
-        new Role(RoleName.GodFather, RoleTypes['Mafia']), 
-        new Role(RoleName.Mafia, RoleTypes['Mafia']), 
-        new Role(RoleName.Citizen, RoleTypes['Citizen']), 
-        new Role(RoleName.Doctor, RoleTypes['Citizen']), 
-        new Role(RoleName.Inspector, RoleTypes['Citizen']), 
-        new Role(RoleName.Snipper, RoleTypes['Citizen']), 
-        new Role(RoleName.DieHard, RoleTypes['Citizen']), 
-        new Role(RoleName.Guard, RoleTypes['Citizen']), 
+        new Role(RoleName.NoRole, RoleTypes['None'], 'NoRole'), 
+        new Role(RoleName.GodFather, RoleTypes['Mafia'], 'پدر خوانده'), 
+        new Role(RoleName.Mafia, RoleTypes['Mafia'], 'مافیا ساده'), 
+        new Role(RoleName.Citizen, RoleTypes['Citizen'], 'شهروند ساده'), 
+        new Role(RoleName.Doctor, RoleTypes['Citizen'], 'دکتر'), 
+        new Role(RoleName.Inspector, RoleTypes['Citizen'], 'کارآگاه'), 
+        new Role(RoleName.Snipper, RoleTypes['Citizen'], 'اسنایپر'), 
+        new Role(RoleName.DieHard, RoleTypes['Citizen'], 'جان سخت'), 
+        new Role(RoleName.Guard, RoleTypes['Citizen'], 'نگهبان'), 
     ];
 
     return roles;
@@ -99,10 +116,10 @@ function Roles_Factory(){
 
 function Players_Factory(){
     let players = [
-        new Player(0, "A", 1), 
-        new Player(1, "B", 5), 
-        new Player(2, "فرهاد", 3),
-        new Player(3, "C", 4) 
+        new Player(0, "A", RoleName.GodFather), 
+        new Player(1, "B", RoleName.Inspector), 
+        new Player(2, "فرهاد", RoleName.Citizen),
+        new Player(3, "C", RoleName.Doctor) 
     ];
 
     return players;
@@ -112,20 +129,195 @@ function Players_Factory(){
 let ROLES = Roles_Factory();
 let players = Players_Factory();
 let nightActions = [];
-var gameStatus = 0;
-var numDayNight = 1;
+var gameStatus = '';
+var numDayNight = 0;
 const DETAIL_REPORT = false;
 const DOCTOR_SELF_SAVE_MAX = 1
 const GODFATHER_NEGATIVE_INSPECTION_MAX = 1
 
 function show_page(page){
+    gameStatus = page;
     $('divp').hide();
 
     $("#"+page).show();
 }
 
 function load_start(){
+    //check saved game
+    if (typeof(Storage) !== "undefined") {
+        let game_continue = localStorage.getItem('mg_continue');
+        if(game_continue == 'yes')
+            load_lastgame_data();
+        else
+            localStorage.setItem("mg_continue", "no");
+    } else {
+    // Sorry! No Web Storage support..
+    }
+
     show_page("start");
+    dialog("lsahoisch", function() {load_init();},function() {}); 
+    
+}
+
+function dialog(message, yesCallback, noCallback) {
+    $('#modalText').html(message);
+    $('#modalBackground').show();
+    var dialog = $('#dialog').dialog({ closeText: "X"});
+
+    $('#btnYes').click(function() {
+        dialog.dialog('close');
+        $('#modalBackground').hide();
+        yesCallback();
+    });
+    $('#btnNo').click(function() {
+        dialog.dialog('close');
+        $('#modalBackground').hide();
+        noCallback();
+    });
+    $('#btnClose').click(function() {
+        dialog.dialog('close');
+        $('#modalBackground').hide();
+        noCallback();
+    });
+}
+
+function load_lastgame_data(){
+
+}
+
+function save_data_players(){
+    var strPlayers = ''; 
+    players.forEach(pl => {
+        strPlayers += pl.toString();
+    });
+    localStorage.setItem("mg_players", strPlayers);
+}
+
+function save_data_nightactions(){
+    var strnightaction = ''; 
+    nightActions.forEach(na => {
+        strnightaction += na.toString();
+    });
+    localStorage.setItem("mg_nightactions", strnightaction);
+}
+
+function load_init(){
+    $('#mafiaRolesList').html('');
+    $('#citizenRolesList').html('');
+    ROLES.forEach(role => {
+        if (role.typeId == RoleTypes.Mafia){
+            $('#mafiaRolesList').append('<button class="btn btn_role w3-red" onclick="add_role('+ role.roleId +')">'+ role.roleName + '</button>');
+        }
+        if (role.typeId == RoleTypes.Citizen){
+            $('#citizenRolesList').append('<button class="btn btn_role w3-blue" onclick="add_role('+ role.roleId +')">'+ role.roleName + '</button>');
+        }
+    });
+    show_page('roles');
+}
+
+var selected_roles = [];
+var playerNames = [];
+
+function add_role(roleId){
+    selected_roles.push(roleId);
+    $('#selectedRolesList').append('<div class="">' + ROLES[roleId].roleName + '</div>');
+}
+
+function clear_roles_list(){
+    $('#selectedRolesList').html('');
+    selected_roles = [];
+}
+
+function load_players(){
+    show_page('players');
+}
+
+function add_player(){
+    var pname = $('#playerNameInput').val();
+    if (pname=="") return;
+    playerNames.push(pname);
+    $('#playersList').append('<div>'+pname+'<div>');   
+    $('#playerNameInput').val('');
+}
+
+function clear_players_list(){
+    $('#playersList').html('');
+    playerNames = [];
+}
+
+function show_pre_distribution(){
+    if(selected_roles.length != playerNames.length){
+        alert('تعداد نقش ها و بازیکنان برابر نیست');
+        load_init();
+        return;
+    }  
+
+    show_page('pre_distribution');
+}
+
+function role_distribution(){
+    
+    distribute_roles();
+    save_data_players();
+
+    load_distribution();    
+}
+
+function distribute_roles(){
+    players = [];
+    for (i=0; i < playerNames.length; i++){
+        var rnd = Math.random();
+        var ri = Math.floor(rnd * selected_roles.length);
+        let roleid = selected_roles[ri];
+        players.push(new Player(i, playerNames[i], roleid));
+        selected_roles.splice(ri, 1);
+    }
+}
+
+function load_distribution(){
+    show_page("distribution"); 
+    $("#myRoleTitle").html('');  
+    $("#page_title").html('توزیع نقش');
+    $("#distMessage").html('نام خود رو انتخاب کنید');
+    
+    $("#distPlayersList").html("");
+    $("#endDistributionButton").show(); 
+    for (i=0; i < players.length; i++){
+        if(!isNightActionDone(i)){
+            $("#distPlayersList").append('<button class="btn btn_player" onClick="showPlayerRole(' + i + ')">'+ players[i].name + '</button>');  
+            $("#endDistributionButton").hide();
+        }
+        else {
+            $("#distPlayersList").append('<button disabled class="btn btn_player">'+ players[i].name + '</button>');  
+        }
+    }
+}
+
+function showPlayerRole(playerIndex){
+    dialog('آیا ' + "'" + players[playerIndex].name + "'" +   ' هستی؟',
+    function() {
+        show_page('show_role');
+        $("#myRoleTitle").html(ROLES[players[playerIndex].roleId].roleName);
+        nightActions.push(new Action(numDayNight, 0, playerIndex, playerIndex));
+    },
+    function() {
+        // Do something else
+    }
+    );
+}
+
+function confirmModal(text){
+    document.getElementById('modalText').innerHTML=text;
+    document.getElementById('modal').style.display='block';
+    document.getElementById('modal').onclick='block';
+}
+
+function acceptModal(){
+    document.getElementById('modal').style.display='none';
+}
+
+function start_intro_day(){
+    load_day();
 }
 
 // DAY
@@ -137,7 +329,8 @@ function load_day(){
         load_end(false);
     }
     else{
-        $("#page_title").html('روز ' + numDayNight);
+        if (numDayNight == 0) $("#page_title").html('روز معارفه');
+        else  $("#page_title").html('روز ' + numDayNight);
         show_page("day");    
     }
 }

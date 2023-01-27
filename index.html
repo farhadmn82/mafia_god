@@ -6,6 +6,8 @@
     <link rel="stylesheet" href="css/main.css" />
     <script src="js/game.js"></script>
     <script src="js/jquery-2.0.3.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
@@ -21,9 +23,53 @@
 
     <div class="w3-container content">
         <div class='page_content'>
-            
+
             <divp id="start" class="frame frame_day">
-                <button id='btn_start_game' class='btn btn_start center' onclick='load_day()'>شروع بازی</button>
+                <button id='btn_start_game' class='btn btn_start center' onclick='load_init()'>شروع بازی جدید</button>
+            </divp>
+
+            <divp id="init" class="frame frame_day">
+                <button onclick="load_players()">افزودن</button>
+            </divp>
+
+            <divp id="roles" class="frame frame_day">
+                <div class="page_text">نقش های بازی را انتخاب کنید</div> 
+                <button class="btn btn_clear" onclick="clear_roles_list()">حذف همه</button>
+                <button class="btn btn_clear w3-green" onclick="load_players()">تایید</button>
+                <br/>
+                <div id='selectedRolesList' class='list_box float_right_listbox'></div>   
+                <div id="allRoles" class="all_roles_div">
+                    <div id='mafiaRolesList'></div>
+                    <hr/>
+                    <div id='citizenRolesList'></div>    
+                </div>
+            </divp>
+
+            <divp id="players" class="frame frame_day">
+                <div class="page_text">نام بازیکنان را وارد کنید</div>
+                <input id="playerNameInput" type="text" id="pname" name="pname">
+                <button class="btn btn_clear w3-blue" onclick="add_player()">افزودن</button>
+                <button class="btn btn_clear" onclick="clear_players_list()">حذف همه</button>
+                <div id='playersList' class='list_box'></div>
+                <button class="btn btn_clear w3-green center" onclick="show_pre_distribution()">شروع بازی</button>
+            </divp>
+
+            <divp id="pre_distribution" class="frame frame_day">
+                <div class="page_text">همه بازیکنان برای توزیع نقش بخوابند</div><br/>
+                <div class="page_text">بازیکنان تک به تک بیدار شوند و نقش خود را ببینند</div><br/>
+                <button class="btn btn_clear w3-green center" onclick="role_distribution()">شروع توزیع نقش</button>
+            </divp>
+
+            <divp id="distribution" class="frame frame_night">
+                <div id="distMessage" class="page_text"></div>
+                <div id="distPlayersList" class="w3-center"></div>
+                <button id="endDistributionButton" class="btn btn_end_night center w3-green" onclick="start_intro_day()">پایان توزیع نقش</button>
+            </divp>
+
+            <divp id="show_role" class="frame frame_night">
+                <div id="myRoleMessage" class="page_text">نقش شما:</div>
+                <div id="myRoleTitle" class="w3-center"></div>
+                <button class="btn btn_end_night center" onclick="load_distribution()">قبول</button>
             </divp>
 
             <divp id="voting" class="frame frame_day">
@@ -87,7 +133,20 @@
 
     </div>
 
+    <div id="dialog">
+        <div class="w3-modal-content modal">
+            <div class="w3-container" style="padding:3vh">
+                <div id='btnClose' onclick="" class="w3-button w3-display-topright"><i class="fa fa-close"></i></div>
+                <div id="modalText" style="padding:2vh">آیا مطمئن هستید؟</div>
+                <div>
+                    <button id="btnYes" class="btn btn_clear w3-blue w3-right" onclick="">بله</button>
+                    <button id="btnNo" class="btn btn_clear w3-red w3-left" onclick="">خیر</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <div id="modalBackground" class="modal_background"></div>
 <script>
     load_start();
 </script>
