@@ -4,10 +4,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/w3.css">
     <link rel="stylesheet" href="css/main.css" />
-    <script src="js/game.js"></script>
     <script src="js/jquery-2.0.3.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script src="js/game.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
@@ -20,12 +20,14 @@
         </div>
     
     </div>
-
+    
     <div class="w3-container content">
         <div class='page_content'>
 
+            <!--INIT-->
             <divp id="start" class="frame frame_day">
                 <button id='btn_start_game' class='btn btn_start center' onclick='load_init()'>شروع بازی جدید</button>
+                <button id='btn_last_game' class='btn btn_start center' onclick='reload_last_game()'>ادامه بازی</button>
             </divp>
 
             <divp id="init" class="frame frame_day">
@@ -51,37 +53,34 @@
                 <button class="btn btn_clear w3-blue" onclick="add_player()">افزودن</button>
                 <button class="btn btn_clear" onclick="clear_players_list()">حذف همه</button>
                 <div id='playersList' class='list_box'></div>
-                <button class="btn btn_clear w3-green center" onclick="show_pre_distribution()">شروع بازی</button>
+                <button class="btn btn_clear w3-green center" onclick="load_pre_assignment()">شروع بازی</button>
             </divp>
 
-            <divp id="pre_distribution" class="frame frame_day">
+            <divp id="pre_assignment" class="frame frame_day">
                 <div class="page_text">همه بازیکنان برای توزیع نقش بخوابند</div><br/>
                 <div class="page_text">بازیکنان تک به تک بیدار شوند و نقش خود را ببینند</div><br/>
-                <button class="btn btn_clear w3-green center" onclick="role_distribution()">شروع توزیع نقش</button>
+                <button class="btn btn_clear w3-green center" onclick="load_role_assign()">شروع توزیع نقش</button>
             </divp>
 
-            <divp id="distribution" class="frame frame_night">
+            <divp id="role_assign" class="frame frame_night">
                 <div id="distMessage" class="page_text"></div>
                 <div id="distPlayersList" class="w3-center"></div>
-                <button id="endDistributionButton" class="btn btn_end_night center w3-green" onclick="start_intro_day()">پایان توزیع نقش</button>
+                <button id="endDistributionButton" class="btn btn_end_night center w3-green" onclick="load_day()">پایان توزیع نقش</button>
             </divp>
 
             <divp id="show_role" class="frame frame_night">
                 <div id="myRoleMessage" class="page_text">نقش شما:</div>
                 <div id="myRoleTitle" class="w3-center"></div>
-                <button class="btn btn_end_night center" onclick="load_distribution()">قبول</button>
-            </divp>
-
-            <divp id="voting" class="frame frame_day">
-                <div class="page_text">کدام بازیکن در رای گیری خارج می شود؟</div>
-                <div id="votingPlayerList" class="w3-center"></div>
+                <button class="btn btn_end_night center" onclick="load_role_assign()">قبول</button>
             </divp>
             
+            <!--DAY-->
             <divp id="day" class="frame frame_day">
                 <div id="reportMessage" class="page_text"></div>
                 <div id="day_timer_div" class="day_timer_div">
                     <div class="w3-center">
                         <div class="w3-bar">
+                        <button class="w3-button w3-margin btn btn_sec" onclick="restart_countdown_timer(15)">15s</button>
                         <button class="w3-button w3-margin btn btn_sec" onclick="restart_countdown_timer(30)">30s</button>
                         <button class="w3-button w3-margin btn btn_sec" onclick="restart_countdown_timer(45)">45s</button>
                         <button class="w3-button w3-margin btn btn_sec" onclick="restart_countdown_timer(60)">60s</button>
@@ -94,33 +93,47 @@
                     </div>
                 </div>
                 <div class="">
-                    <button class='w3-align-right btn btn_goto_voting' onclick="load_voting()">رای گیری</button> 
+                    <button id="votingButton" class='w3-align-right btn btn_goto_voting' onclick="load_voting()">رای گیری</button> 
+                    <button id="votingButton" class='w3-align-left w3-amber' onclick="load_report()"><i class="fa fa-search"></i></button> 
                 </div>
             </divp>
             
+            <divp id="voting" class="frame frame_day">
+                <div class="page_text">کدام بازیکن در رای گیری خارج می شود؟</div>
+                <div id="votingPlayerList" class="w3-center"></div>
+            </divp>
+
+            <!--NIGHT-->
+            <divp id="sleep" class="frame frame_night">
+                <div id="sleepMessage" class="page_text"></div>
+                <button id="sleepButton" class="btn center btn_sleep" onClick="start_mafia_wakeup_process()">خواب</button>        
+            </divp>
+
             <divp id="night" class="frame frame_night">
                 <div id="nightMessage" class="page_text"></div>
                 <div id="actionPlayersList" class="w3-center"></div>
                 <button class="btn btn_end_night center" onclick="start_next_day()">پایان شب</button>
             </divp>
             
-            <divp id="sleep" class="frame frame_night">
-                <div id="sleepMessage" class="page_text"></div>
-                <button id="sleepButton" class="btn center btn_sleep" onClick="load_mafiaWakeUp()">خواب</button>        
-            </divp>
-            
-            <divp id="nightAction" class="frame frame_night">
+            <divp id="night_action" class="frame frame_night">
                 <div id="nightActionMessage" class="page_text"></div>
                 <div id="nightActionArea" class="w3-center"></div>        
             </divp>
             
+            <!--REPORT-->
             <divp id="report" class="frame frame_night">
-            <div id="reportNightShootMessage" class="page_text"></div>
-                <button id="showInspctionButton" class="btn center btn_submit w3-amber" onclick="showreportinspection()">مشاهده استعلام جان سخت</button>
-                <div id="reportInspectionMessage" class="page_text"></div>
+                <div id="reportNightShootMessage" class="page_text"></div>
+                <button id="inquiryReportShowButton" class="btn center btn_submit w3-amber" onclick="show_inquery_overall()">مشاهده استعلام جان سخت</button>
+                <div id="inquiryReportDiv" >
+                    <div id="inquiryReportOverall" class="page_text"></div>
+                    <div class="w3-center" onclick="show_inquiry_details()"><i class="fa fa-bars w3-center w3-margin-top"></i></div>
+                    <div id="inquiryReportDetails" class="page_text report_detail_view"></div>
+                    
+                </div>
                 <button id="reportButton" class="btn center btn_submit" onClick="load_day()">ادامه</button>
             </divp>
 
+            <!--END-->
             <divp id="end" class="frame frame_day">
                 <div id="endMessage" class="page_text"></div>
                 <button id="endButton" class="btn center btn_submit" onClick="load_start()">پایان بازی</button>
@@ -128,28 +141,19 @@
         </div>
     </div>
 
-
     <div class="w3-container footer">
-
-    </div>
-
-    <div id="dialog">
-        <div class="w3-modal-content modal">
-            <div class="w3-container" style="padding:3vh">
-                <div id='btnClose' onclick="" class="w3-button w3-display-topright"><i class="fa fa-close"></i></div>
-                <div id="modalText" style="padding:2vh">آیا مطمئن هستید؟</div>
-                <div>
-                    <button id="btnYes" class="btn btn_clear w3-blue w3-right" onclick="">بله</button>
-                    <button id="btnNo" class="btn btn_clear w3-red w3-left" onclick="">خیر</button>
-                </div>
-            </div>
-        </div>
     </div>
 
     <div id="modalBackground" class="modal_background"></div>
-<script>
-    load_start();
-</script>
+    <div id="modal" class="modal" role="dialog">
+        <div id="modalMessage" class="modal_text"></div>
+        <div id="modalButtonOK" class="w3-align-right w3-green btn w3-green modal_button" onclick="">بله</div>
+        <div id="modalButtonCancel" class="w3-align-left w3-red btn modal_button" onclick="">خیر</div>        
+    </div>
+
+    <script>
+        load_start();
+    </script>
 
 
 </body>
