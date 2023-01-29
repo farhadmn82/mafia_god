@@ -86,6 +86,7 @@ body{
     width: 30%;
     text-align: center;
     margin: 5vh 9%;
+    font-size: 3vh;
 }
 
 .day_timer_div{
@@ -111,19 +112,6 @@ divp{
     border-radius: inherit;
     font-size: 3vh;
 }
-
-.ui-dialog-titlebar-close {
-    visibility: hidden;
-}
-.ui-dialog {
-    max-height: 0;
-    position: fixed !important;
-    top: 20vh !important;
-    right: 15% !important;
-}
-
-
-
 
 .list_box{
     border: 1px solid gray;
