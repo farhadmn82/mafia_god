@@ -246,27 +246,33 @@ function reload_last_game_data(){
         return;
     }
     
-    var pls = JSON.parse(localStorage.getItem(LS_MG_PLAYERS));
-    players = [];
-    pls.forEach(pl => {
-        players.push(new Player(pl['id'], pl['name'], pl['roleId']));
-    });
+    try{
+        var pls = JSON.parse(localStorage.getItem(LS_MG_PLAYERS));
+        players = [];
+        pls.forEach(pl => {
+            players.push(new Player(pl['id'], pl['name'], pl['roleId']));
+        });
+        
+        var nas = JSON.parse(localStorage.getItem(LS_MG_NIGHT_ACTIONS));
+        nightActions = [];
+        nas.forEach(na => {
+            nightActions.push(new Action(na['numNight'], na['type'], na['rolePlayerIndex'], na['targetPlayerIndex']));
+        });
     
-    var nas = JSON.parse(localStorage.getItem(LS_MG_NIGHT_ACTIONS));
-    nightActions = [];
-    nas.forEach(na => {
-        nightActions.push(new Action(na['numNight'], na['type'], na['rolePlayerIndex'], na['targetPlayerIndex']));
-    });
-
-    var gameData = JSON.parse(localStorage.getItem(LS_MG_GAME_DATA));
-    gameState = gameData['gameState']; 
-    numDayNight  = gameData['numDayNight'];
-    doctorSelfSave  = gameData['doctorSelfSave'];
-    godFatherNegativeInquiry  = gameData['godFatherNegativeInquiry'];
-    dieHardInquiriesMade  = gameData['dieHardInquiriesMade'];
-    guardVoted  = gameData['guardVoted'];
-
-    reload_last_report();
+        var gameData = JSON.parse(localStorage.getItem(LS_MG_GAME_DATA));
+        gameState = gameData['gameState']; 
+        numDayNight  = gameData['numDayNight'];
+        doctorSelfSave  = gameData['doctorSelfSave'];
+        godFatherNegativeInquiry  = gameData['godFatherNegativeInquiry'];
+        dieHardInquiriesMade  = gameData['dieHardInquiriesMade'];
+        guardVoted  = gameData['guardVoted'];
+    
+        reload_last_report();
+    }
+    catch(error){
+        reload_default_values();
+    }
+    
 }
 
 function reload_last_report(){
@@ -645,7 +651,7 @@ function prepareForNight(){
         load_night();
     }
     else {
-        $("#sleepMessage").html('بازیکن ها به ترتیب نقش های خود رو انجام بدن');
+        $("#sleepMessage").html('بازیکن ها به ترتیب نقش های خود رو انجام بدهند');
         play(4);
         setTimeout(load_night, 2 * unit);
     }
@@ -931,6 +937,14 @@ function load_end(citizens_won)
     }
     else{
         $('#endMessage').html('مافیا برنده شد!');
+        let descr = '<br/>';
+        players.forEach(pl => {
+            if (GAME_ROLES[pl.roleId].isMAFIA()){
+                descr += '<div>' + pl.name + ' : ' + GAME_ROLES[pl.roleId].roleName + '</div>';
+            }
+
+        });
+        $('#endText').html(descr);
         play('loss');
     }
     
@@ -946,4 +960,4 @@ function play(voiceId) {
     var audio = new Audio('audio\\' + voiceId + '.wav');
     audio.play();
 }
-const unit = 500;
+const unit = 1000;
