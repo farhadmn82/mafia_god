@@ -426,7 +426,7 @@ function clear_players_list(){
 function load_pre_assignment(){
     if(selected_roles.length != playerNames.length){
         alert('تعداد نقش ها و بازیکنان برابر نیست');
-        load_init();
+        load_roles();
         return;
     }  
 
@@ -473,6 +473,7 @@ function showPlayerRole(playerIndex){
         () => {
             show_page('show_role');
             $("#myRoleTitle").html(GAME_ROLES[players[playerIndex].roleId].roleName);
+            $("#myRoleImage").html('<img src="img/role' + players[playerIndex].roleId + '.jpg" style="height: 20vh;margin-top: 3vh;" />');
             nightActions.push(new Action(numDayNight, 0, playerIndex, playerIndex));
         }, 
         () => { close_modal() });
@@ -691,6 +692,7 @@ function isNightActionDone(playerIndex){
 
 function clearNightActionPage(){
     $("#nightActionArea").html("");
+    $("#nightActionImage").html("");
     $("#actionPlayersList").html("");
 }
 
@@ -724,6 +726,7 @@ function load_player_night_action(playerIndex){
     }, 
     () => {
         load_night();
+        close_modal();
     });
 }
 
@@ -794,19 +797,25 @@ function submitNightAction(actionType, rolePlayerIndex, targetPlayerIndex){
     nightActions.push(new Action(numDayNight, actionType, rolePlayerIndex, targetPlayerIndex));
     
     if (actionType == ActionType.InspectorInquiry){
-        var inps = "منفی";
+        var insp = "منفی";
         if(GAME_ROLES[players[targetPlayerIndex].roleId].isMAFIA()){
-            var inps = "مثبت";
+            var insp = "مثبت";
         }
 
         if(GAME_ROLES[players[targetPlayerIndex].roleId].roleId == RoleEnum.GodFather && 
             godFatherNegativeInquiry < GODFATHER_NEGATIVE_INSPECTION_MAX)
         {
-            inps = 'منفی';
+            insp = 'منفی';
             godFatherNegativeInquiry++;
         }
         
-        $('#nightActionMessage').html('جواب استعلام ' + "'" + players[targetPlayerIndex].name + "'" + '<br/><strog>' + inps + '</strong>');
+        $('#nightActionMessage').html('جواب استعلام ' + "'" + players[targetPlayerIndex].name + "'" + '<br/><h2>' + insp + '</h2>');
+        if (insp=='مثبت'){
+            $('#nightActionImage').html('<img src="img/like.png" style="height: 10vh;margin-top: 4vh;" />');
+        }
+        else{
+            $('#nightActionImage').html('<img src="img/dislike.png" style="height: 10vh;margin-top: 4vh;" />');
+        }
     }
     
     if (actionType == ActionType.DoctorSave &&

@@ -14,7 +14,7 @@ body{
     height: 100%;
     min-height: 100%;
     margin: 0;
-    background: lightsteelblue;
+    background: rgb(40,40,40);
     direction: rtl;
 }
 
@@ -69,6 +69,7 @@ body{
     position: fixed;
     top: 30vh;
     margin: auto 10%;
+    padding: 1vh 1%;
     display: none;
     width: 80%;
     background-color: aliceblue;
@@ -96,14 +97,17 @@ body{
     font-size: 6vh;
     font-weight: bold;
     display: block;
-    background: floralwhite;
-    color: chocolate;
-    padding: 0vh 10%;
-    margin: 2vh 10%;
+    background: black;
+    color: limegreen;
+    padding: 0vh 3%;
+    margin: 2vh 25%;
     border-radius: 3px;
     /* box-shadow: 0px 0px 2px grey; */
-    border: 1px solid gra
+    border: 1px ridge gray;
+    font-family: monospace;
 }
+
+
 divp{
     display: block;
     box-shadow: 0px 0px 10px 5px grey;
@@ -178,8 +182,16 @@ button{
 }
 
 .btn_sec{
-    background-color: cadetblue;
-    color: aquamarine;
+    color: black;
+    background-color: beige;
+    border: 1px solid gray;
+    display: inline-block;
+    /* border-radius: 5px; */
+    padding: 1vh 0%;
+    width: 25%;
+    font-weight: bold;
+    margin: 1vh 2%;
+    font-family: fantasy;
 }
 
 .btn_pause{
@@ -187,10 +199,12 @@ button{
     background-color: chocolate;
     font-weight: bold;
     border-radius: 5vh;
+    padding: 1vh 30%;
+    margin-top: 4vh;
 }
 
 .btn_goto_voting{
-    bottom: 5vh;
+    bottom: 13vh;
     position: absolute;
     right: 10%;
     background-color: white;
@@ -214,6 +228,13 @@ button{
 .btn_submit{
     padding: 2vh 20%;
     margin-top: 15vh;
+}
+
+.btn_report{
+    margin-top: 6vh;
+    border-radius: 100%;
+    border: 0.5vh solid black;
+    padding: 1vh 2vh;
 }
 
 .frame{

@@ -71,6 +71,7 @@
             <divp id="show_role" class="frame frame_night">
                 <div id="myRoleMessage" class="page_text">نقش شما:</div>
                 <div id="myRoleTitle" class="w3-center"></div>
+                <div id="myRoleImage" class="w3-center"></div>
                 <button class="btn btn_end_night center" onclick="load_role_assign()">قبول</button>
             </divp>
             
@@ -80,12 +81,12 @@
                 <div id="day_timer_div" class="day_timer_div">
                     <div class="w3-center">
                         <div class="w3-bar">
-                        <button class="w3-button w3-margin btn btn_sec" onclick="restart_countdown_timer(15)">15s</button>
-                        <button class="w3-button w3-margin btn btn_sec" onclick="restart_countdown_timer(30)">30s</button>
-                        <button class="w3-button w3-margin btn btn_sec" onclick="restart_countdown_timer(45)">45s</button>
-                        <button class="w3-button w3-margin btn btn_sec" onclick="restart_countdown_timer(60)">60s</button>
-                        <button class="w3-button w3-margin btn btn_sec" onclick="restart_countdown_timer(90)">90s</button>
-                        <button class="w3-button w3-margin btn btn_sec" onclick="restart_countdown_timer(120)">120s</button>
+                        <button class="w3-button btn btn_sec" onclick="restart_countdown_timer(15)">15</button>
+                        <button class="w3-button btn btn_sec" onclick="restart_countdown_timer(30)">30</button>
+                        <button class="w3-button btn btn_sec" onclick="restart_countdown_timer(45)">45</button>
+                        <button class="w3-button btn btn_sec" onclick="restart_countdown_timer(60)">60</button>
+                        <button class="w3-button btn btn_sec" onclick="restart_countdown_timer(90)">90</button>
+                        <button class="w3-button btn btn_sec" onclick="restart_countdown_timer(120)">2m</button>
                         </div>
                         
                         <div id="countdown_timer_second" class="countdown_timer_second w3-center">0.0</div>
@@ -94,7 +95,7 @@
                 </div>
                 <div class="">
                     <button id="votingButton" class='w3-align-right btn btn_goto_voting' onclick="load_voting()">رای گیری</button> 
-                    <button id="votingButton" class='w3-align-left w3-amber' onclick="load_report()"><i class="fa fa-search"></i></button> 
+                    <button id="votingButton" class='w3-align-left w3-amber btn btn_report' onclick="load_report()"><i class="fa fa-search"></i></button> 
                 </div>
             </divp>
             
@@ -117,6 +118,7 @@
             
             <divp id="night_action" class="frame frame_night">
                 <div id="nightActionMessage" class="page_text"></div>
+                <div id="nightActionImage" class="page_text"></div>
                 <div id="nightActionArea" class="w3-center"></div>        
             </divp>
             
